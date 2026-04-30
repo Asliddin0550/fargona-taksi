@@ -88,7 +88,7 @@
 
         <!-- MASHINA TURI - Orange -->
         <div>
-          <label class="block text-xs font-bold text-orange-700 mb-1.5">🚗 MASHINA TURI</label>
+          <label class="block text-xs font-bold text-orange-700 mb-1.5"> MASHINA TURI</label>
           <select id="car" required class="field-orange w-full rounded-2xl px-5 py-4 text-gray-800 font-semibold">
             <option value="">Tanlang</option>
             <option value="Yengil avtomobil">Yengil avtomobil</option>
@@ -117,40 +117,47 @@
     const BOT_TOKEN = "8202225710:AAFeDmr0Jp1-WOvo234hFZeQtk_-qkMytzs";
     const GROUP_ID = "-1002503400045";
 
-    // Sanani formatlash funksiyasi (YYYY-MM-DD -> DD/MM/YYYY)
+    // Sanani formatlash (YYYY-MM-DD -> DD/MM/YYYY)
     function formatDate(dateString) {
       const parts = dateString.split('-');
       return `${parts[2]}/${parts[1]}/${parts[0]}`;
     }
 
-    // Vaqtni formatlash funksiyasi (o'zgartirmasdan qaytaradi)
+    // Vaqtni formatlash (24 soatlik formatga o'tkazish)
     function formatTime(timeString) {
-      return timeString;
+      if (!timeString) return "";
+      // Vaqt stringini olamiz (masalan "14:30" yoki "02:30")
+      // HTML input har doim 24-soatlik formatda qiymat beradi (HH:MM)
+      return timeString; 
     }
 
     document.getElementById("taxiForm").addEventListener("submit", async function(e) {
       e.preventDefault();
 
+      // Vaqt inputining qiymati (value) har doim "HH:MM" (24 soatlik) bo'ladi
+      // Masalan: 14:56 ni tanlasangiz, value "14:56" bo'ladi
+      const timeValue = document.getElementById("time").value;
+      
       const data = {
         from: document.getElementById("from").value,
         to: document.getElementById("to").value,
         people: document.getElementById("people").value,
         date: formatDate(document.getElementById("date").value),
-        time: formatTime(document.getElementById("time").value),
+        time: timeValue, // To'g'ridan-to'g'ri qiymatni olamiz
         car: document.getElementById("car").value,
         phone: document.getElementById("phone").value
       };
 
       // Rangli formatda Telegram xabari
       const message = `
-🚖 <b>YANGI BUYURTMA!</b> 🚖
+🚖 <b>YANGI BUYURTMA!</b> 
 
  <b>QAYERDAN:</b> <code>${data.from}</code>
-🎯 <b>QAYERGA:</b> <code>${data.to}</code>
+ <b>QAYERGA:</b> <code>${data.to}</code>
 👥 <b>KISHI SONI:</b> <b>${data.people}</b> nafar
 📅 <b>SANA:</b> <b>${data.date}</b>
 ⏰ <b>VAQT:</b> <b>${data.time}</b>
-🚗 <b>MASHINA:</b> <code>${data.car}</code>
+ <b>MASHINA:</b> <code>${data.car}</code>
 📞 <b>TELEFON:</b> <a href="tel:${data.phone}">${data.phone}</a>
 
 ━━━━━━━━━━━━━━━━━
