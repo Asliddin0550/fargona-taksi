@@ -117,6 +117,20 @@
     const BOT_TOKEN = "8202225710:AAFeDmr0Jp1-WOvo234hFZeQtk_-qkMytzs";
     const GROUP_ID = "-1002503400045";
 
+    // Sanani formatlash funksiyasi (YYYY-MM-DD -> DD/MM/YYYY)
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    }
+
+    // Vaqtni formatlash funksiyasi (HH:MM -> HH:MM)
+    function formatTime(timeString) {
+      return timeString;
+    }
+
     document.getElementById("taxiForm").addEventListener("submit", async function(e) {
       e.preventDefault();
 
@@ -124,8 +138,8 @@
         from: document.getElementById("from").value,
         to: document.getElementById("to").value,
         people: document.getElementById("people").value,
-        date: document.getElementById("date").value,
-        time: document.getElementById("time").value,
+        date: formatDate(document.getElementById("date").value),
+        time: formatTime(document.getElementById("time").value),
         car: document.getElementById("car").value,
         phone: document.getElementById("phone").value
       };
@@ -134,11 +148,11 @@
       const message = `
 🚖 <b>YANGI BUYURTMA!</b> 🚖
 
- <b>QAYERDAN:</b> <code>${data.from}</code>
+📍 <b>QAYERDAN:</b> <code>${data.from}</code>
 🎯 <b>QAYERGA:</b> <code>${data.to}</code>
 👥 <b>KISHI SONI:</b> <b>${data.people}</b> nafar
-📅 <b>SANA:</b> <i>${data.date}</i>
-⏰ <b>VAQT:</b> <i>${data.time}</i>
+📅 <b>SANA:</b> <b>${data.date}</b>
+⏰ <b>VAQT:</b> <b>${data.time}</b>
 🚗 <b>MASHINA:</b> <code>${data.car}</code>
 📞 <b>TELEFON:</b> <a href="tel:${data.phone}">${data.phone}</a>
 
