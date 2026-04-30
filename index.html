@@ -119,14 +119,11 @@
 
     // Sanani formatlash funksiyasi (YYYY-MM-DD -> DD/MM/YYYY)
     function formatDate(dateString) {
-      const date = new Date(dateString);
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const year = date.getFullYear();
-      return `${day}/${month}/${year}`;
+      const parts = dateString.split('-');
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
     }
 
-    // Vaqtni formatlash funksiyasi (HH:MM -> HH:MM)
+    // Vaqtni formatlash funksiyasi (o'zgartirmasdan qaytaradi)
     function formatTime(timeString) {
       return timeString;
     }
@@ -148,7 +145,7 @@
       const message = `
 🚖 <b>YANGI BUYURTMA!</b> 🚖
 
-📍 <b>QAYERDAN:</b> <code>${data.from}</code>
+ <b>QAYERDAN:</b> <code>${data.from}</code>
 🎯 <b>QAYERGA:</b> <code>${data.to}</code>
 👥 <b>KISHI SONI:</b> <b>${data.people}</b> nafar
 📅 <b>SANA:</b> <b>${data.date}</b>
