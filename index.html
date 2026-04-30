@@ -36,7 +36,7 @@
     <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
       <form id="taxiForm" class="p-6 space-y-6">
         
-        <!-- QAYERDAN - Blue -->
+        <!-- QAYERDAN -->
         <div>
           <label class="block text-xs font-bold text-blue-700 mb-1.5">📍 QAYERDAN</label>
           <select id="from" required class="field-blue w-full rounded-2xl px-5 py-4 text-gray-800 font-semibold">
@@ -51,7 +51,7 @@
           </select>
         </div>
 
-        <!-- QAYERGA - Green -->
+        <!-- QAYERGA -->
         <div>
           <label class="block text-xs font-bold text-green-700 mb-1.5">🎯 QAYERGA</label>
           <select id="to" required class="field-green w-full rounded-2xl px-5 py-4 text-gray-800 font-semibold">
@@ -65,30 +65,32 @@
           </select>
         </div>
 
-        <!-- NECHA KISHI - Yellow -->
+        <!-- NECHA KISHI -->
         <div>
           <label class="block text-xs font-bold text-yellow-700 mb-1.5">👥 NECHA KISHI?</label>
-          <input type="number" id="people" placeholder="Sonini yozing" required 
+          <input type="number" id="people" placeholder="Masalan: 3" required 
             class="field-yellow w-full rounded-2xl px-5 py-4 text-gray-800 font-semibold">
         </div>
 
-        <!-- KETISH SANASI - Pink -->
+        <!-- KETISH SANASI -->
         <div>
           <label class="block text-xs font-bold text-pink-700 mb-1.5">📅 KETISH SANASI</label>
           <input type="date" id="date" required 
             class="field-pink w-full rounded-2xl px-5 py-4 text-gray-800 font-semibold">
         </div>
 
-        <!-- KETISH VAQTI - Purple -->
+        <!-- KETISH VAQTI - O'ZGARTIRILDI (24 soatlik format uchun) -->
         <div>
-          <label class="block text-xs font-bold text-purple-700 mb-1.5">⏰ KETISH VAQTI</label>
-          <input type="time" id="time" required 
+          <label class="block text-xs font-bold text-purple-700 mb-1.5"> KETISH VAQTI (24:00)</label>
+          <input type="text" id="time" placeholder="Masalan: 14:30" required 
+            pattern="[0-2][0-9]:[0-5][0-9]" title="Vaqt 24 soatlik formatda bo'lishi kerak (masalan: 14:30)"
             class="field-purple w-full rounded-2xl px-5 py-4 text-gray-800 font-semibold">
+          <p class="text-xs text-purple-600 mt-1 ml-2"> Faqat raqam bilan yozing (masalan: 14:30)</p>
         </div>
 
-        <!-- MASHINA TURI - Orange -->
+        <!-- MASHINA TURI -->
         <div>
-          <label class="block text-xs font-bold text-orange-700 mb-1.5"> MASHINA TURI</label>
+          <label class="block text-xs font-bold text-orange-700 mb-1.5">🚗 MASHINA TURI</label>
           <select id="car" required class="field-orange w-full rounded-2xl px-5 py-4 text-gray-800 font-semibold">
             <option value="">Tanlang</option>
             <option value="Yengil avtomobil">Yengil avtomobil</option>
@@ -98,7 +100,7 @@
           </select>
         </div>
 
-        <!-- TELEFON RAQAM - Red -->
+        <!-- TELEFON RAQAM -->
         <div>
           <label class="block text-xs font-bold text-red-700 mb-1.5">📞 TELEFON RAQAM</label>
           <input type="tel" id="phone" placeholder="+998 XX XXX XX XX" required 
@@ -120,44 +122,44 @@
     // Sanani formatlash (YYYY-MM-DD -> DD/MM/YYYY)
     function formatDate(dateString) {
       const parts = dateString.split('-');
-      return `${parts[2]}/${parts[1]}/${parts[0]}`;
-    }
-
-    // Vaqtni formatlash (24 soatlik formatga o'tkazish)
-    function formatTime(timeString) {
-      if (!timeString) return "";
-      // Vaqt stringini olamiz (masalan "14:30" yoki "02:30")
-      // HTML input har doim 24-soatlik formatda qiymat beradi (HH:MM)
-      return timeString; 
+      if(parts.length === 3) {
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+      return dateString;
     }
 
     document.getElementById("taxiForm").addEventListener("submit", async function(e) {
       e.preventDefault();
 
-      // Vaqt inputining qiymati (value) har doim "HH:MM" (24 soatlik) bo'ladi
-      // Masalan: 14:56 ni tanlasangiz, value "14:56" bo'ladi
       const timeValue = document.getElementById("time").value;
-      
+      const dateValue = document.getElementById("date").value;
+
+      // Vaqt validatsiyasi (qo'shimcha himoya)
+      const timeRegex = /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/;
+      if (!timeRegex.test(timeValue)) {
+        alert("❌ Vaqt noto'g'ri!\nIltimos, 24 soatlik formatda yozing.\nMasalan: 14:30");
+        return;
+      }
+
       const data = {
         from: document.getElementById("from").value,
         to: document.getElementById("to").value,
         people: document.getElementById("people").value,
-        date: formatDate(document.getElementById("date").value),
-        time: timeValue, // To'g'ridan-to'g'ri qiymatni olamiz
+        date: formatDate(dateValue),
+        time: timeValue, // Endi to'g'ridan-to'g'ri olinadi va tekshiriladi
         car: document.getElementById("car").value,
         phone: document.getElementById("phone").value
       };
 
-      // Rangli formatda Telegram xabari
       const message = `
-🚖 <b>YANGI BUYURTMA!</b> 
+🚖 <b>YANGI BUYURTMA!</b> 🚖
 
  <b>QAYERDAN:</b> <code>${data.from}</code>
- <b>QAYERGA:</b> <code>${data.to}</code>
+🎯 <b>QAYERGA:</b> <code>${data.to}</code>
 👥 <b>KISHI SONI:</b> <b>${data.people}</b> nafar
 📅 <b>SANA:</b> <b>${data.date}</b>
-⏰ <b>VAQT:</b> <b>${data.time}</b>
- <b>MASHINA:</b> <code>${data.car}</code>
+ <b>VAQT:</b> <b>${data.time}</b>
+🚗 <b>MASHINA:</b> <code>${data.car}</code>
 📞 <b>TELEFON:</b> <a href="tel:${data.phone}">${data.phone}</a>
 
 ━━━━━━━━━━━━━━━━━
